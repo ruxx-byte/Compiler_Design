@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1762100084 source:c:\users\tithi\documents\c++\tasks\main.cpp
+	<iostream>
+
+1762101013 source:c:\users\tithi\documents\c++\tasks\task1.cpp
+	<iostream>
+
+1762101307 source:c:\users\tithi\documents\c++\tasks\task2.cpp
+	<iostream>
+
+1762101323 source:c:\users\tithi\documents\c++\tasks\task3.cpp
+	<iostream>
+	<string>
+
+1762101337 source:c:\users\tithi\documents\c++\tasks\task4.cpp
+	<iostream>
+
+1762101354 source:c:\users\tithi\documents\c++\tasks\task5.cpp
+	<iostream>
+
+1762101386 source:c:\users\tithi\documents\c++\tasks\task7.cpp
+	<iostream>
+	<string>
+
