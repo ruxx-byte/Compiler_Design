@@ -1,46 +1,52 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 
-// function declarations
-void task1();
-void task2();
-void task3();
-void task4();
-void task5();
-void task6();
-void task7();
+bool isAlphabet(char c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+
+bool isDigit(char c) {
+    return (c >= '0' && c <= '9');
+}
+
+bool isValidLater(char c) {
+    return isAlphabet(c) || isDigit(c) || (c == '_');
+}
+
+bool isValidFirst(char c) {
+    return isAlphabet(c) || (c == '_');
+}
 
 int main() {
-    int choice;
-
-    cout << "Select a task to run (1-7): ";
-    cin >> choice;
-
-    switch (choice) {
-        case 1:
-            task1();
-            break;
-        case 2:
-            task2();
-            break;
-        case 3:
-            task3();
-            break;
-        case 4:
-            task4();
-            break;
-        case 5:
-            task5();
-            break;
-        case 6:
-            task6();
-            break;
-        case 7:
-            task7();
-            break;
-        default:
-            cout << "Invalid choice!" << endl;
+    ifstream file("sample.txt");
+    if (!file.is_open()) {
+        cout << "Error: Could not open sample.txt" << endl;
+        return 1;
     }
 
+    string input;
+    getline(file, input);
+    file.close();
+
+    if (input.empty()) {
+        cout << "\"" << input << "\" is NOT a valid identifier." << endl;
+        return 0;
+    }
+
+    if (!isValidFirst(input[0])) {
+        cout << "\"" << input << "\" is NOT a valid identifier." << endl;
+        return 0;
+    }
+
+    for (int i = 1; i < input.length(); i++) {
+        if (!isValidLater(input[i])) {
+            cout << "\"" << input << "\" is NOT a valid identifier." << endl;
+            return 0;
+        }
+    }
+
+    cout << "\"" << input << "\" is a valid identifier." << endl;
     return 0;
 }
