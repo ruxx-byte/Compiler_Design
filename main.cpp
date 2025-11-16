@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <cctype>
 using namespace std;
 
 bool isAlphabet(char c) {
@@ -19,6 +21,20 @@ bool isValidFirst(char c) {
     return isAlphabet(c) || (c == '_');
 }
 
+bool isKeyword(const string &str) {
+    string keywords[] = {
+        "int","float","double","char","bool","void",
+        "if","else","while","for","return","switch",
+        "case","break","continue","true","false"
+    };
+
+    for (string k : keywords)
+        if (k == str)
+            return true;
+
+    return false;
+}
+
 int main() {
     ifstream file("sample.txt");
     if (!file.is_open()) {
@@ -26,27 +42,69 @@ int main() {
         return 1;
     }
 
-    string input;
-    getline(file, input);
+    string input((istreambuf_iterator<char>(file)),
+                 (istreambuf_iterator<char>()));
     file.close();
 
-    if (input.empty()) {
-        cout << "\"" << input << "\" is NOT a valid identifier." << endl;
-        return 0;
-    }
+    vector<string> tokens;
+    string current = "";
 
-    if (!isValidFirst(input[0])) {
-        cout << "\"" << input << "\" is NOT a valid identifier." << endl;
-        return 0;
-    }
+    for (int i = 0; i < input.length(); i++) {
+        char c = input[i];
 
-    for (int i = 1; i < input.length(); i++) {
-        if (!isValidLater(input[i])) {
-            cout << "\"" << input << "\" is NOT a valid identifier." << endl;
-            return 0;
+        if (isspace(c)) {
+            if (!current.empty()) {
+                tokens.push_back(current);
+                current.clear();
+            }
+            continue;
         }
+
+        string ops = "+-*/%(){};=,<>";
+        if (ops.find(c) != string::npos) {
+            if (!current.empty()) {
+                tokens.push_back(current);
+                current.clear();
+            }
+            tokens.push_back(string(1, c));
+            continue;
+        }
+
+        current += c;
     }
 
-    cout << "\"" << input << "\" is a valid identifier." << endl;
+    if (!current.empty())
+        tokens.push_back(current);
+
+    for (string tok : tokens) {
+        if (isKeyword(tok))
+            cout << tok << "  ---> KEYWORD\n";
+
+        else if (isValidFirst(tok[0])) {
+            bool valid = true;
+            for (int i = 1; i < tok.length(); i++)
+                if (!isValidLater(tok[i])) valid = false;
+
+            if (valid)
+                cout << tok << "  ---> IDENTIFIER\n";
+            else
+                cout << tok << "  ---> UNKNOWN TOKEN\n";
+        }
+
+        else if (isdigit(tok[0])) {
+            bool numeric = true;
+            for (char c : tok)
+                if (!isdigit(c)) numeric = false;
+
+            if (numeric)
+                cout << tok << "  ---> NUMBER\n";
+            else
+                cout << tok << "  ---> UNKNOWN TOKEN\n";
+        }
+
+        else
+            cout << tok << "  ---> UNKNOWN TOKEN\n";
+    }
+
     return 0;
 }
